@@ -256,7 +256,7 @@ def main(args):
 		else:
 			tcr.setSequence()
 
-	outfile = 'bfd'+os.path.splitext(os.path.basename(args.filename))[0] + ".fastq"
+	outfile = 'bfd_'+os.path.splitext(os.path.basename(args.filename))[0] + ".fastq"
 	print "writing to", outfile
 	with open(outfile, "w") as f:	
 		for tcr in tcrs:
