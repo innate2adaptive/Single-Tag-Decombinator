@@ -1,5 +1,3 @@
-from IPython import embed
-
 import os
 import sys
 import argparse
@@ -13,14 +11,12 @@ from Bio.pairwise2 import format_alignment
 
 import time
 
-
 def args():
 	parser = argparse.ArgumentParser( description='** script to find overlaps between fragments of TCR sequence and rebuild complete sequences. **')
 	parser.add_argument('-f', '--filename', type=str, help='File of sequences to be analysed', required=False)
 	parser.add_argument('-np', '--nproc', type=int, help='Number of cores for multprocessing alignment', required=False, default=None)
 
 	return parser
-
 
 class TCR:
 	def __init__(self,vread = None):
@@ -104,7 +100,6 @@ class TCR:
 		self.sequence = self.vread[4][:-len(overlap)] + overlap + self.jread[4][len(overlap):]
 		return self.sequence
 
-
 class Alignment:
 	def __init__(self, alignment, v_id, j):
 		self.alignment = alignment
@@ -116,7 +111,6 @@ class Alignment:
 		self.j_id = j[3]
 		self.lrank = None
 		self.prank = None
-
 
 def getSequence(read):
 	return read[4]
@@ -154,7 +148,6 @@ def align(s1,s2,min_o):
 					if ( j[4] - j[2] < 3 ) or ( j[4] - j[2] == 3 and "-" in j[1] ):
 						good_alignments.append(j)
 				
-
 	# for j in rel_overlaps:
 	# 	s2start =  s2[:j[0] + min_o]
 	# 	s1end = s1[-(j[0] + min_o):]
@@ -174,9 +167,6 @@ def reconstruct(tcr,jreads):
 	tcr.rankAlignmentPurities()
 	tcr.setPriorities()
 	return tcr
-
-
-
 
 def main(args):
 	total_time = time.time()
@@ -207,16 +197,20 @@ def main(args):
 	for v in vreads:
 		tcrs.append(TCR(vread = v))
 
-	usedjs = []
+	#usedjs = []
 
 	reads_count = 0
 	print "Aligning Reads..."
 	print "pooling with " + str(cores)+" cores:"
 	aligned_tcrs = []
 
-	part_tcrs = [tcrs[i:i + 100] for i in xrange(0, len(tcrs), 100)]
+	part_tcrs = [tcrs[i:i + 800] for i in xrange(0, len(tcrs), 800)]
+	usedjs = []
 
 	for t in part_tcrs:
+		if time.time() - total_time > 144000:
+			break
+		print "jreads considered:", len(jreads)
 		start = time.time()
 		pool = mp.Pool(processes=cores)
 		#results = [pool.apply(reconstruct, args=(tcr,jreads)) for tcr in tcrs[0:200]]
@@ -228,33 +222,33 @@ def main(args):
 		print time.time() - start
 		pool.close()
 
-
-	tcrs = aligned_tcrs
-
-	
+	#tcrs = aligned_tcrs	
 	# tcrs with longest overlap alignments get priority for matching
-	print "Reconstructing TCRs..."
+		print "Reconstructing 800 TCRs..."
 
-	for tcr in sorted(tcrs,key=operator.attrgetter('longest_overlap'),reverse=True):
+		for tcr in sorted(aligned_tcrs,key=operator.attrgetter('longest_overlap'),reverse=True):
 
-		for a in tcr.ranked_alignments:
-			if a.j_id in usedjs:
-				continue
-			else:
-				tcr.j_id = a.j_id
-				tcr.jread = a.jread
-				tcr.chosen_alignment = a
-				usedjs.append(a.j_id)
-				break
+			for a in tcr.ranked_alignments:
+				if a.j_id in usedjs:
+					continue
+				else:
+					tcr.j_id = a.j_id
+					tcr.jread = a.jread
+					tcr.chosen_alignment = a
+					usedjs.append(a.j_id)
+					jreads.remove(a.jread)
+					break
 
 		# tcr.chosen_alignment = tcr.ranked_alignments[0]
 		# tcr.j_id = tcr.ranked_alignments[0].j_id
 		# tcr.jread = tcr.ranked_alignments[0].jread
 		# jreads.remove(tcr.jread)
-		if not tcr.chosen_alignment:
-			tcrs.remove(tcr)
-		else:
-			tcr.setSequence()
+			if not tcr.chosen_alignment:
+				aligned_tcrs.remove(tcr)
+			else:
+				tcr.setSequence()
+
+	tcrs = aligned_tcrs
 
 	outfile = 'bfd_'+os.path.splitext(os.path.basename(args.filename))[0] + ".fastq"
 	print "writing to", outfile

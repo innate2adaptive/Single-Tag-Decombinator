@@ -2,14 +2,12 @@ import os
 import sys
 import collections
 
-from SupplementaryScripts.SingleTagTools.SingleTagDecombinator import args, get_chain
-import SupplementaryScripts.SingleTagTools.reconstructTCR as reconstructTCR
+from SingleTagDecombinator import args, get_chain
+#import SupplementaryScripts.SingleTagTools.reconstructTCR as reconstructTCR
+import reconstructTCR
 from argparse import Namespace
 
 import reconstructTCR
-
-
-from IPython import embed
 
 def getTagFolder():
 	import urllib2
@@ -83,9 +81,10 @@ def getOutputFile(inputargs):
 def getDcrScript():
 	import urllib2
 	try:
-		f = "https://raw.githubusercontent.com/innate2adaptive/Decombinator/master/Decombinator.py"
+		f = "https://raw.githubusercontent.com/innate2adaptive/Decombinator/93614c643b9151a6901f263bbb7894e46782ce07/Decombinator.py"
 		urllib2.urlopen(urllib2.Request(f))      # Request URL, see whether is found
 		return "curl "+f+" | python - "
+		print ""
 	except:
 		cwd = os.getcwd()
 		basedir = os.path.dirname(cwd)
@@ -98,7 +97,6 @@ def getDcrScript():
 		else:
 			print "Error: Cannot find online or offline version of Decombinator."
 			sys.exit()
-
 
 
 def Decombinator(dcr_args,outputfiles):
@@ -127,8 +125,6 @@ def Decombinator(dcr_args,outputfiles):
 			nbcfile = os.path.splitext(outname)[0]+".nbc"
 			os.rename(nbcfile, outdir+os.sep+c+"_"+nbcfile)
 			outputfiles.append(outdir+os.sep+c+"_"+nbcfile)
-
-
 
 
 if __name__ == '__main__':
@@ -180,8 +176,6 @@ if __name__ == '__main__':
 	outputfiles.append(outdir+os.sep+bfdname)
 #	outputfiles.append(recon_args.outputfile)
 	
-	
-
 	dcr_args = Namespace(allowNs = args.allowNs, 
 						 bclength = 42, 
 						 chain = args.chain, 
@@ -201,7 +195,6 @@ if __name__ == '__main__':
 					     tags = args.tags)
 
 	Decombinator(dcr_args,outputfiles)
-
 
 	print "\n#######################################################"
 	print "Output Files have been saved to:"
