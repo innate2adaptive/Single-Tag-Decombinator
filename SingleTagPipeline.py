@@ -5,16 +5,21 @@ import collections
 from SingleTagDecombinator import args, get_chain
 #import SupplementaryScripts.SingleTagTools.reconstructTCR as reconstructTCR
 import reconstructTCR
+import argparse
 from argparse import Namespace
 
 import reconstructTCR
+
+def pipelineargs():
+	parser = argparse.ArgumentParser( description='**Pipeline for Single Tag Decombinator**')
+	parser.add_argument('-np', '--nproc', type=int, help='Number of cores for multprocessing alignment', required=False, default=None)
+	return parser.parse_args()
 
 def getTagFolder():
 	import urllib2
 	try:
 		d = "https://raw.githubusercontent.com/innate2adaptive/Decombinator-Tags-FASTAs/master/"
 		urllib2.urlopen(urllib2.Request(d))      # Request URL, see whether is found
-		print "here3"
 	except:
 		cwd = os.getcwd()
 		basedir = os.path.dirname(cwd)
@@ -132,13 +137,15 @@ if __name__ == '__main__':
 
 	args = args()	
 	software_dir = os.path.dirname(__file__)
+	if software_dir == "":
+		software_dir = "."
 	#args.tagfastadir = getTagFolder()
 
 	outdir = organiseOutput()
 	outputfiles = []
 
 	st_dcr_input = "python " + software_dir + "/SingleTagDecombinator.py"	
-
+	print 
 	for a in vars(args):
 		if vars(args)[a] == True:
 			st_dcr_input += " "+"--"+a
@@ -166,7 +173,7 @@ if __name__ == '__main__':
  #                           outputfile = outdir+os.sep+"OUTPUT.n12",
  #                           separatedir = None)
 
- 	recon_args = Namespace(filename = outdir+os.sep+outname, nproc = None)
+ 	recon_args = Namespace(filename = outdir+os.sep+outname, nproc = args.nproc)
 
 	print "\n################################################"
 	print "Running ReconstructTCR: Building For Decombinator"

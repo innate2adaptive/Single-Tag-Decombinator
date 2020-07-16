@@ -201,7 +201,7 @@ def main(args):
 
 	reads_count = 0
 	print "Aligning Reads..."
-	print "pooling with " + str(cores)+" cores:"
+	print "pooling with pool size:" + str(cores)
 	aligned_tcrs = []
 
 	part_tcrs = [tcrs[i:i + 800] for i in xrange(0, len(tcrs), 800)]

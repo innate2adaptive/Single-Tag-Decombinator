@@ -154,7 +154,8 @@ def args():
       required=False, default="Decombinator-Tags-FASTAs")
   parser.add_argument(
       '-nbc', '--nobarcoding', action='store_true', help='Option to run Decombinator without barcoding, i.e. so as to run on data produced by any protocol.', required=False)
-
+  parser.add_argument(
+      '-np', '--nproc', type=int, help='Number of cores for multprocessing alignment', required=False, default=None)
   return parser.parse_args()
 
 ##########################################################
