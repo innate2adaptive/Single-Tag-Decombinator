@@ -14,6 +14,7 @@ def getTagFolder():
 	try:
 		d = "https://raw.githubusercontent.com/innate2adaptive/Decombinator-Tags-FASTAs/master/"
 		urllib2.urlopen(urllib2.Request(d))      # Request URL, see whether is found
+		print "here3"
 	except:
 		cwd = os.getcwd()
 		basedir = os.path.dirname(cwd)
@@ -131,7 +132,7 @@ if __name__ == '__main__':
 
 	args = args()	
 	software_dir = os.path.dirname(__file__)
-	args.tagfastadir = getTagFolder()
+	#args.tagfastadir = getTagFolder()
 
 	outdir = organiseOutput()
 	outputfiles = []
@@ -192,7 +193,7 @@ if __name__ == '__main__':
 					     prefix = 'dcr_', 
 					     species = args.species, 
 					     suppresssummary = args.suppresssummary, 
-					     tagfastadir = args.tagfastadir,
+					     tagfastadir = None,
 					     tags = args.tags)
 
 	Decombinator(dcr_args,outputfiles)
