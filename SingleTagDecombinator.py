@@ -156,7 +156,7 @@ def args():
       '-nbc', '--nobarcoding', action='store_true', help='Option to run Decombinator without barcoding, i.e. so as to run on data produced by any protocol.', required=False)
   parser.add_argument(
       '-np', '--nproc', type=int, help='Number of cores for multprocessing alignment', required=False, default=None)
-  return parser.parse_args()
+  return parser.parse_known_args()
 
 ##########################################################
 ############# FASTQ SANITY CHECK AND PARSING #############
@@ -804,7 +804,7 @@ def sort_permissions(fl):
 if __name__ == '__main__':
   s_t = time()
 
-  inputargs = vars(args())
+  inputargs = vars(args()[0])
   
   print "Running Decombinator version", __version__
 

@@ -13,7 +13,9 @@ import reconstructTCR
 def pipelineargs():
 	parser = argparse.ArgumentParser( description='**Pipeline for Single Tag Decombinator**')
 	parser.add_argument('-np', '--nproc', type=int, help='Number of cores for multprocessing alignment', required=False, default=None)
-	return parser.parse_args()
+	parser.add_argument('-of', '--outfolder', type=str, help='Name of output folder for results files', required=False, default="SingleTagAnalysis")
+	
+	return parser.parse_known_args()
 
 def getTagFolder():
 	import urllib2
@@ -31,9 +33,8 @@ def getTagFolder():
 			print "Error: Cannot find online or offline version of Decombinator-Tags-FASTAs directory."
 			sys.exit()
 
-def organiseOutput():
+def organiseOutput(dirname):
 
-	dirname = "SingleTagAnalysis"
 	dirnum = ""
 	counter = 0
 	exitflag = False
@@ -135,13 +136,14 @@ def Decombinator(dcr_args,outputfiles):
 
 if __name__ == '__main__':
 
-	args = args()	
+	pipelineargs = pipelineargs()
+	args = args()[0]	
 	software_dir = os.path.dirname(__file__)
 	if software_dir == "":
 		software_dir = "."
 	#args.tagfastadir = getTagFolder()
 
-	outdir = organiseOutput()
+	outdir = organiseOutput(pipelineargs[0].outfolder)
 	outputfiles = []
 
 	st_dcr_input = "python " + software_dir + "/SingleTagDecombinator.py"	
