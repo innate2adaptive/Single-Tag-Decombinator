@@ -183,13 +183,20 @@ def main(args):
 	reads = [l.rstrip().split(", ") for l in lines]	
 	
 	vreads = []
-	jreads = []	
+	jreads = []
+	bothvandj = []	
 
 	for r in reads:
 		if r[1] == 'n/a':
 			jreads.append(r)
 		if r[2] == 'n/a':
 			vreads.append(r)
+		if r[1] != "n/a" and r[2] != "n/a":
+			bothvandj.append(r)
+
+	print "reads with V tag", len(vreads)
+	print "reads with J tag", len(jreads)
+	print "reads with both V and J tag", len(bothvandj)
 
 	tcrs = []
 

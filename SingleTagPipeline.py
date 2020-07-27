@@ -147,12 +147,15 @@ if __name__ == '__main__':
 	outputfiles = []
 
 	st_dcr_input = "python " + software_dir + "/SingleTagDecombinator.py"	
-	print 
+	print ""
 	for a in vars(args):
-		if vars(args)[a] == True:
-			st_dcr_input += " "+"--"+a
-		elif vars(args)[a] != None and vars(args)[a] != False:
-			st_dcr_input += " "+"--"+a+" "+"\'"+str(vars(args)[a])+"\'"
+		# if vars(args)[a] == True:
+		# 	st_dcr_input += " "+"--"+a
+		# elif vars(args)[a] != None and vars(args)[a] != False:
+		#st_dcr_input += " "+"--"+a+" "+"\'"+str(vars(args)[a])+"\'"
+		if vars(args)[a] == None:
+			continue
+		st_dcr_input += " "+"--"+a+" "+str(vars(args)[a])
 
 
 	print "###############################"
@@ -162,6 +165,7 @@ if __name__ == '__main__':
 	
 	os.system(st_dcr_input)
 	outname = getOutputFile(args)
+
 	os.rename(outname, outdir+os.sep+outname)
 	outputfiles.append(outdir+os.sep+outname)
 
@@ -175,7 +179,7 @@ if __name__ == '__main__':
  #                           outputfile = outdir+os.sep+"OUTPUT.n12",
  #                           separatedir = None)
 
- 	recon_args = Namespace(filename = outdir+os.sep+outname, nproc = args.nproc)
+ 	recon_args = Namespace(filename = outdir+os.sep+outname, nproc = pipelineargs[0].nproc)
 
 	print "\n################################################"
 	print "Running ReconstructTCR: Building For Decombinator"
