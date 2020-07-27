@@ -88,7 +88,7 @@ def getOutputFile(inputargs):
 def getDcrScript():
 	import urllib2
 	try:
-		f = "https://raw.githubusercontent.com/innate2adaptive/Decombinator/93614c643b9151a6901f263bbb7894e46782ce07/Decombinator.py"
+		f = "https://raw.githubusercontent.com/innate2adaptive/Decombinator/half-tag-threshold/Decombinator.py"
 		urllib2.urlopen(urllib2.Request(f))      # Request URL, see whether is found
 		return "curl "+f+" | python - "
 		print ""
@@ -114,6 +114,8 @@ def Decombinator(dcr_args,outputfiles):
 		for a in vars(dcr_args):
 			if a == 'chain':
 				dcr_input += " "+"--"+"chain "+c
+			elif a == 'tagthreshold':
+				dcr_input += " "+"--"+a+" "+str(vars(dcr_args)[a])
 			elif vars(dcr_args)[a] == True:
 				dcr_input += " "+"--"+a
 			elif vars(dcr_args)[a] != None and vars(dcr_args)[a] != False:
@@ -207,7 +209,8 @@ if __name__ == '__main__':
 					     species = args.species, 
 					     suppresssummary = args.suppresssummary, 
 					     tagfastadir = None,
-					     tags = args.tags)
+					     tags = args.tags,
+					     tagthreshold = args.tagthreshold)
 
 	Decombinator(dcr_args,outputfiles)
 
